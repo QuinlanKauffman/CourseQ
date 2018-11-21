@@ -1,5 +1,7 @@
 package Overview;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 public class TestClass {
@@ -11,4 +13,9 @@ public class TestClass {
 		System.out.println(m.getFallValue());
 	}
 
+	@Test
+	public void test2() throws IOException {
+		BuildCourseList bcl = new BuildCourseList();
+		bcl.callMajor();
+	}
 }

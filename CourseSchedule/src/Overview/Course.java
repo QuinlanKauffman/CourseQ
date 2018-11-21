@@ -1,6 +1,9 @@
 package Overview;
 
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -72,7 +75,7 @@ public class Course {
 		this.availableSpring = availableSpring;}
 	
 	public Course(String courseID, int creditHours, boolean availFall, boolean availSpring,
-			boolean courseCompleted, boolean hasPrereqs, boolean hasCoreqs){
+			boolean courseCompleted, boolean hasPrereqs, boolean hasCoreqs) throws IOException{
 		this.courseID = courseID;
 		this.creditHours = creditHours;
 		this.availableFall = availFall;
@@ -94,35 +97,34 @@ public class Course {
 	}
 	
 	
-	private void setPrereqs() {
+	private void setPrereqs() throws IOException {
 		String sheetNm = "Prereqs";
+		String preCourseID = "";
+		int index = 0;
 		ArrayList<String> prereqs = new ArrayList<String>();
-		FileInputStream fs = new FileInputStream(this.filePath);
-		Workbook wb = Workbook.getWorkbook(fs);
 		
-		// TO get the access to the sheet
-		Sheet sh = wb.getSheet(sheetNm);
+		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
+        HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
+		HSSFSheet sh = wb.getSheet(sheetNm);
+				
 		
-		int totalNoOfRows = sh.getRows();
-
-		// To get the number of columns present in sheet
-		int totalNoOfCols = sh.getColumns();
-
-		int col = 0;
-		for (int row = 0; row < totalNoOfRows; row++) {
-
-			if ((String) sh.getCell(col, row).getContents() == this.courseID)
-			{
-				for (col = 1;col < totalNoOfCols; col ++) {
-					if (sh.getCell(col, row).getContents() == "")
-						continue;
-					prereqs.add((String) sh.getCell(col, row).getContents());
-				}
-			}
-
+		for(Row row : sh) {
+			Cell cell = row.getCell(0);
+			index +=1;
+			if (cell.toString() == this.courseID)
+				break;
 		}
 		
+		for (Cell cell : sh.getRow(index)) {
+			if (cell.getRowIndex() == 0)
+				continue;
+			
 		
+			preCourseID = cell.toString();
+			prereqs.add(preCourseID);
+			System.out.println(preCourseID);
+			
+		}
 				
 		this.Prereqs = prereqs;
 	}
@@ -131,35 +133,35 @@ public class Course {
 		return this.Prereqs;
 	}
 	
-	private void setCoreqs() {
+	private void setCoreqs() throws IOException {
 		String sheetNm = "Coreqs";
+		String coCourseID = "";
+		int index = 0;
 		ArrayList<String> coreqs = new ArrayList<String>();
+		
+		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
+        HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
+		HSSFSheet sh = wb.getSheet(sheetNm);
 				
-		FileInputStream fs = new FileInputStream(this.filePath);
-		Workbook wb = Workbook.getWorkbook(fs);
 		
-		// TO get the access to the sheet
-		Sheet sh = wb.getSheet(sheetNm);
-		
-		int totalNoOfRows = sh.getRows();
-
-		// To get the number of columns present in sheet
-		int totalNoOfCols = sh.getColumns();
-
-		int col = 0;
-		for (int row = 0; row < totalNoOfRows; row++) {
-
-			if ((String) sh.getCell(col, row).getContents() == this.courseID)
-			{
-				for (col = 1;col < totalNoOfCols; col ++) {
-					if (sh.getCell(col, row).getContents() == "")
-						continue;
-					coreqs.add((String) sh.getCell(col, row).getContents());
-				}
-			}
-
+		for(Row row : sh) {
+			Cell cell = row.getCell(0);
+			index +=1;
+			if (cell.toString() == this.courseID)
+				break;
 		}
 		
+		for (Cell cell : sh.getRow(index)) {
+			if (cell.getRowIndex() == 0)
+				continue;
+			
+		
+			coCourseID = cell.toString();
+			coreqs.add(coCourseID);
+			System.out.println(coCourseID);
+			
+		}
+				
 		this.Coreqs = coreqs;
 	}
 	
