@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 public class TestClass {
-	
+	 
 	@Test
 	public void test1() {
 		Major m = new Major();
