@@ -25,7 +25,7 @@ public class Course {
 	private boolean courseCompleted;
 	private int numberOfPrereqs;
 	private int numberOfCoreqs;
-	
+	 
 	
 	private ArrayList<String> Prereqs = new ArrayList<String>();
 	private ArrayList<String> Coreqs = new ArrayList<String>();

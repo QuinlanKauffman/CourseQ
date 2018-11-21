@@ -25,46 +25,79 @@ public class BuildCourseList {
 	private ArrayList<Course> allCourses = new ArrayList<Course>(); 
 	
 	
-	public void setCourses() {
+	public void setCourses() throws FileNotFoundException {
 		String sheetNm = "General Info";
-		ArrayList<Course> allCourses = new ArrayList<Course>();
+		String courseID = null;
+		int creditHours = 0;
+		boolean availFall = false;
+		boolean availSpring = false;
+		boolean courseCompleted = false;
+		boolean hasPrereqs = false;
+		boolean hasCoreqs = false;
 		
-		FileInputStream fs = new FileInputStream(this.filePath);
-		Workbook wb = Workbook.getWorkbook(fs);
+		ArrayList<Course> allCourses = new ArrayList<Course>();
+		FileInputStream fis = new FileInputStream(filePath);
+		
+		Workbook wb = getWorkbook(fis);
 		
 		// TO get the access to the sheet
 		Sheet sh = wb.getSheet(sheetNm);
-		
-		int totalNoOfRows = sh.getRows();
+		Iterator<Row> rowIterator = sh.iterator();
+		Row firstRow = sh.getRow(3);
+		Iterator<Cell> cellIterator = firstRow.cellIterator();
+				
+		while (rowIterator.hasNext()) {
+            Iterator cellIterator = row.cellIterator();
 
-		String courseID;
-		int creditHours;
-		boolean availFall;
-		boolean availSpring;
-		boolean courseCompleted;
-		boolean hasPrereqs;
-		boolean hasCoreqs;
-		
-		for (int row = 3; row < totalNoOfRows; row++) {
-			
-			courseID = (String) sh.getCell(0, row).getContents();
-			creditHours = (Integer) sh.getCell(1, row).getContents();
-			availFall = (Boolean) sh.getCell(2, row).getContents();	
-			availSpring = (Boolean) sh.getCell(3, row).getContents();
-			courseCompleted = (Boolean) sh.getCell(4, row).getContents();
-			hasPrereqs = (Boolean) sh.getCell(5, row).getContents();
-			hasCoreqs = (Boolean) sh.getCell(6, row).getContents();
-			
-			Course c = new Course(courseID, creditHours, availSpring, availFall, courseCompleted,
+            //Iterating over each cell (column wise)  in a particular row.
+            while (cellIterator.hasNext()) {
+
+                Cell cell = (Cell) cellIterator.next();
+                if (cell.getColumnIndex() == 0) {
+                    courseID = cell.toString();
+                }
+                
+                if (cell.getColumnIndex() == 1) {
+                    creditHours = (int) cell.getNumericCellValue();
+                }
+                
+                if (cell.getColumnIndex() == 2) {
+                    availFall = cell.getBooleanCellValue();
+                }
+                
+                if (cell.getColumnIndex() == 3) {
+                    availSpring = cell.getBooleanCellValue();
+                }
+                
+                if (cell.getColumnIndex() == 4) {
+                    courseCompleted = cell.getBooleanCellValue();
+                }
+                
+                if (cell.getColumnIndex() == 5) {
+                	hasCoreqs = cell.getBooleanCellValue();
+                }
+                
+                if (cell.getColumnIndex() == 6) {
+                    hasCoreqs = cell.getBooleanCellValue();
+                }
+                
+            }
+
+            Course c = new Course(courseID, creditHours, availSpring, availFall, courseCompleted,
 					hasPrereqs,hasCoreqs);
 			allCourses.add(c);
-			
 		}
 				
 		this.allCourses = allCourses;
 	}
 	
 	
+	private Workbook getWorkbook(FileInputStream fis) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	public void callMajor() {
 		ArrayList<ArrayList<ArrayList<Course>>> poss = new 
 				ArrayList<ArrayList<ArrayList<Course>>>();
