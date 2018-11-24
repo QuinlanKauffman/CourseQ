@@ -282,7 +282,7 @@ public class Major {
 	
 	public long numberOfPoss() {
 		long a = 1;
-		int coursesLeft =20;
+		int coursesLeft = 20;
 		int semesters = 4;
 		int b;
 		for (int i = 0; i< semesters ;i++){
