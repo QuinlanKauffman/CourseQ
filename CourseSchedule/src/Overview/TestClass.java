@@ -13,9 +13,18 @@ public class TestClass {
 		System.out.println(m.getFallValue());
 	}
 
+//	@Test
+//	public void test2() throws IOException {
+//		BuildCourseList bcl = new BuildCourseList();
+//		bcl.callMajor();
+//	}
+	
 	@Test
-	public void test2() throws IOException {
-		BuildCourseList bcl = new BuildCourseList();
-		bcl.callMajor();
+	public void test3()
+	{
+		Major m = new Major();
+		m.setSemestersToFinish(8);
+		System.out.println("Number of poss: " + m.numberOfPoss());
+		
 	}
 }

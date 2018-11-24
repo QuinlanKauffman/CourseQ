@@ -279,4 +279,28 @@ public class Major {
 	public int getmaxCreditsPerSemester() {
 		return this.maxCreditsPerSemester;
 	}
+	
+	public long numberOfPoss() {
+		long a = 1;
+		int coursesLeft =20;
+		int semesters = 4;
+		int b;
+		for (int i = 0; i< semesters ;i++){
+			b = coursesLeft - i*5;
+			a *= binomialCoeff(b,5);
+		}
+		System.out.println(coursesLeft);
+		return a;
+	
+	}
+	public long binomialCoeff(int n, int k)  
+    { 
+      
+        // Base Cases 
+        if (k == 0 || k == n) 
+            return 1; 
+          
+        // Recur 
+        return binomialCoeff(n - 1, k - 1) + binomialCoeff(n - 1, k); 
+    } 
 }
