@@ -282,17 +282,19 @@ public class Major {
 	
 	public long numberOfPoss() {
 		long a = 1;
-		int coursesLeft = 20;
-		int semesters = 4;
+		int coursesLeft = 26;
+		int semesters = 5;
+		int coursesPerSemester = 5;
 		int b;
-		for (int i = 0; i< semesters ;i++){
-			b = coursesLeft - i*5;
-			a *= binomialCoeff(b,5);
+		for (int i = 0; i< semesters - 1 ;i++){
+			b = coursesLeft - i*coursesPerSemester;
+			a *= binomialCoeff(b,coursesPerSemester);
 		}
-		System.out.println(coursesLeft);
+		//Don't need to do the last semester because will just multiply by 1
 		return a;
 	
 	}
+	
 	public long binomialCoeff(int n, int k)  
     { 
       
