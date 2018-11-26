@@ -76,11 +76,10 @@ public class Major {
 		for (Course c:coursesToTake)
 		{
 			if (c.getnumberOfCoreqs() == 0 && c.getnumberOfPrereqs() == 0) {
-				this.coursesWithoutReqs.add(c);
+				coursesWithoutReqs.add(c);
 			}
-			else {
-				this.coursesWithReqs.add(c);
-			}
+			else
+				coursesWithReqs.add(c);
 		}
 		
 	}
