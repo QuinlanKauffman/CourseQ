@@ -243,8 +243,47 @@ public class Major {
 	}
 	
 	
+	public void sortPrereqs() {
+		
+	}
 	
+	private int coursesWithCoreqs(ArrayList<Course> courseList) {
+		int counter = 0;
+		for (Course c: courseList) {
+			counter += c.getnumberOfCoreqs();
+		}
+		return counter;
+	}
 	
+//	private void groupCoreqs() {
+//		int oldNumberOfCoreqs;
+//		int index;
+//		
+//		while(coursesWithCoreqs(this.coursesWithReqs) != 0) {
+//			for (Course c: this.coursesWithReqs) {
+//				if (c.getnumberOfCoreqs() == 1)
+//				{
+//					index = this.coursesWithReqs.indexOf(c);
+//					for (int i = index; i < coursesWithReqs.size();i++) {
+//						Course d = coursesWithReqs.get(i);
+//						if (d.getcourseID() == c.getcourseID())
+//							break;
+//				}
+//			}
+//			String courseID = c.getcourseID() + d.getcourseID();
+//			int creditHours = c.getcreditHours() + d.getcreditHours();
+//			boolean
+//			
+//			Course e = new Course()
+//			
+//		}
+//		
+//				
+//				
+//				
+//				c.setNumberOfCoreqs(0);
+//		
+//	}
 
 	public Major(){}
 	//Default constructor

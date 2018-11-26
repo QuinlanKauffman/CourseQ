@@ -74,6 +74,30 @@ public class Course {
 	public void setspringAvailability(boolean availableSpring) {
 		this.availableSpring = availableSpring;}
 	
+	public void setNumberOfCoreqs(int newNumberOfCoreqs) {
+		this.numberOfCoreqs = newNumberOfCoreqs;
+		if (this.numberOfCoreqs == 0)
+			this.Coreqs = null;
+	}
+	
+	public void setPrereqs(ArrayList<String> additionalPrereqs) {
+		int counter;
+		for (String newPrereq: additionalPrereqs) {
+			counter = 0;
+			for (String oldPrereq : this.Prereqs) {
+				if (newPrereq == oldPrereq)
+					counter +=1;
+			}
+			if (counter == 0) {
+				this.Prereqs.add(newPrereq);
+			}
+		}
+		
+		this.numberOfPrereqs = this.Prereqs.size();
+	}
+	
+	
+	
 	public Course(String courseID, int creditHours, boolean availFall, boolean availSpring,
 			boolean courseCompleted, boolean hasPrereqs, boolean hasCoreqs) throws IOException{
 		this.courseID = courseID;
