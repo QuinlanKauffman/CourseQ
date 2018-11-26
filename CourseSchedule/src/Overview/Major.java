@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public class Major {
 	
+	//If the prereq or coreq has already been completed, then need to change coreqs and prereqs
+	
 	private int semestersToFinish;
 	private int maxCreditsPerSemester;
 	private int fallValue;
@@ -34,7 +36,7 @@ public class Major {
 		this.ALLCOURSES = allCourses;
 		this.removeCoursesAlreadyTaken();
 		this.removeCoursesWithoutReqs();
-		this.groupAllInitial();
+		//this.groupAllInitial();
 	}
 	
 	public ArrayList<ArrayList<ArrayList<Course>>> getPossibilties(int semestersLeft,
@@ -70,14 +72,17 @@ public class Major {
 
 	 
 	private void removeCoursesWithoutReqs() {
+		
 		for (Course c:coursesToTake)
 		{
 			if (c.getnumberOfCoreqs() == 0 && c.getnumberOfPrereqs() == 0) {
-				coursesWithoutReqs.add(c);
+				this.coursesWithoutReqs.add(c);
 			}
-			else
-				coursesWithReqs.add(c);
+			else {
+				this.coursesWithReqs.add(c);
+			}
 		}
+		
 	}
 	
 	
@@ -140,6 +145,8 @@ public class Major {
 				
 				ArrayList<Course> tempCourseListNext = new ArrayList<Course>();
 				ArrayList<Course> tempCourseListBefore = new ArrayList<Course>();
+				ArrayList<Course> tempCoreqList = new ArrayList<Course>();
+				ArrayList<Course> ac = new ArrayList<Course>();
 				
 				if (c.prereqsMet(getcoursesBeforeSemester(i,unfinishedSemesterList)) == false) {
 					//Need to add the course to all the remaining semesters and check
@@ -153,8 +160,11 @@ public class Major {
 					unfinishedSemesterList.set(i,tempCourseListBefore);
 					
 					if (c.getnumberOfCoreqs() != 0) {
-						for (Integer in:this.semesterIndexListActual) {
-							
+						for (int a = 0; a<this.semesterIndexListActual.size(); a++) {
+							ac = unfinishedSemesterList.get(this.semesterIndexListActual.get(a));
+							Course d = new Course();
+							d = ac.get(this.courseIndexListActual.get(a));
+							tempCoreqList.add(d);
 						}
 						
 					}
@@ -392,4 +402,29 @@ public class Major {
         // Recur 
         return binomialCoeff(n - 1, k - 1) + binomialCoeff(n - 1, k); 
     } 
+	
+	
+	public void printCoursesWithReqs() {
+		for (Course c: this.coursesWithReqs) {
+			System.out.println(c.getcourseID());
+		}
+	}
+	
+	public void printCoursesWithoutReqs() {
+		for (Course c: this.coursesWithoutReqs) {
+			System.out.println(c.getcourseID());
+		}
+	}
+	
+	public void printCoursesCompleted() {
+		for (Course c: this.coursesCompletedList) {
+			System.out.println(c.getcourseID());
+		}
+	}
+	
+	public void printAllCourses() {
+		for (Course c: this.ALLCOURSES) {
+			System.out.println(c.getcourseID());
+		}
+	}
 }

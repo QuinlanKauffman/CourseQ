@@ -47,14 +47,10 @@ public class Course {
 		this.courseCompleted = courseCompleted;}
 	
 	public int getnumberOfPrereqs() {
-		//No setter, only a getter
-		this.numberOfPrereqs = Prereqs.size();
-		return Prereqs.size();}
+		return this.numberOfPrereqs;}
 		
 	public int getnumberOfCoreqs(){
-		//No setter, only a getter
-		this.numberOfCoreqs = Coreqs.size();
-		return (Coreqs.size()+1);}
+		return this.numberOfCoreqs;}
 	
 	public void setcreditHours(int creditHours){
 		this.creditHours = creditHours;}
@@ -113,14 +109,29 @@ public class Course {
 			this.numberOfPrereqs = getPrereqs().size();
 		}
 		
+		if (hasPrereqs == false) {
+			this.Prereqs = null;
+			this.numberOfPrereqs = 0;
+		}
+		
+		
 		if (hasPrereqs == true) {
 			this.setCoreqs();
 			this.numberOfPrereqs = getCoreqs().size();
 		}
 		
+		if (hasCoreqs == false) {
+			this.Coreqs = null;
+			this.numberOfCoreqs = 0;
+		}
+		
 	}
 	
 	
+	public Course() {
+		// TODO Auto-generated constructor stub
+	}
+
 	private void setPrereqs() throws IOException {
 		String sheetNm = "Prereqs";
 		String preCourseID = "";
@@ -134,22 +145,21 @@ public class Course {
 		
 		for(Row row : sh) {
 			Cell cell = row.getCell(0);
-			index +=1;
-			if (cell.toString() == this.courseID)
-				break;
+			if (cell.getStringCellValue() == this.courseID)
+				index = cell.getRowIndex();
 		}
 		
-		for (Cell cell : sh.getRow(index)) {
-			if (cell.getRowIndex() == 0)
-				continue;
-			
-		
-			preCourseID = cell.toString();
-			prereqs.add(preCourseID);
-			System.out.println(preCourseID);
-			
-		}
+		if (index != 0) {
+			for (Cell cell : sh.getRow(index)) {
+				if (cell.getColumnIndex() == 0)
+					continue;
 				
+			
+				preCourseID = cell.getStringCellValue();
+				prereqs.add(preCourseID);
+				
+			}
+		}	
 		this.Prereqs = prereqs;
 	}
 	
@@ -170,22 +180,21 @@ public class Course {
 		
 		for(Row row : sh) {
 			Cell cell = row.getCell(0);
-			index +=1;
-			if (cell.toString() == this.courseID)
-				break;
+			if (cell.getStringCellValue() == this.courseID)
+				index = cell.getRowIndex();
 		}
 		
-		for (Cell cell : sh.getRow(index)) {
-			if (cell.getRowIndex() == 0)
-				continue;
-			
-		
-			coCourseID = cell.toString();
-			coreqs.add(coCourseID);
-			System.out.println(coCourseID);
-			
-		}
+		if (index != 0) {
+			for (Cell cell : sh.getRow(index)) {
+				if (cell.getColumnIndex() == 0)
+					continue;
 				
+			
+				coCourseID = cell.getStringCellValue();
+				coreqs.add(coCourseID);
+				
+			}
+		}		
 		this.Coreqs = coreqs;
 	}
 	

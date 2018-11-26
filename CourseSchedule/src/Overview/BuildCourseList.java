@@ -45,14 +45,11 @@ public class BuildCourseList {
 		HSSFSheet sh = wb.getSheet(sheetNm);
 				
 		
-		for(Row row : sh) {
-			for (Cell cell : row) {
-				if (cell.getRowIndex() <=2)
-					continue;
+		for(int rowIndex = 3; rowIndex < 55; rowIndex++) {
+			for (Cell cell : sh.getRow(rowIndex)) {
 				
 				if (cell.getColumnIndex() == 0) {
-					courseID = cell.toString();
-					System.out.println(courseID);
+					courseID = cell.getStringCellValue();
 				}
 				
 				if (cell.getColumnIndex() == 1) {
@@ -97,11 +94,25 @@ public class BuildCourseList {
 	public void callMajor() throws IOException {
 		ArrayList<ArrayList<ArrayList<Course>>> poss = new 
 				ArrayList<ArrayList<ArrayList<Course>>>();
-		
 		setCourses();
-		System.out.println(this.allCourses);
 		Major m = new Major(this.allCourses);
-		//poss = m.getPossibilties(5, 18, 2);
-		//System.out.println(poss.size());
+		
+//		System.out.println("-------------------------------------");
+//		m.printCoursesCompleted();
+//		
+//		System.out.println("-------------------------------------");
+//		System.out.println("-------------------------------------");
+//
+//		m.printAllCourses();
+//		System.out.println("-------------------------------------");
+		System.out.println("-------------------------------------");
+
+		m.printCoursesWithoutReqs();
+		
+		System.out.println("-------------------------------------");
+		System.out.println("-------------------------------------");
+		
+		m.printCoursesWithReqs();
+
 	}
 }
