@@ -189,7 +189,7 @@ public class Course {
 		this.Coreqs = coreqs;
 	}
 	
-	private ArrayList<String> getCoreqs() {
+	public ArrayList<String> getCoreqs() {
 		return this.Coreqs;
 	}
 	

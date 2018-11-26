@@ -26,6 +26,9 @@ public class Major {
 	private ArrayList<Course> coursesCompletedList = new ArrayList<Course>();
 	private ArrayList<Course> coursesBeforeSemester = new ArrayList<Course>();
 	
+	private ArrayList<Integer> courseIndexListActual = new ArrayList<Integer>();
+	private ArrayList<Integer> semesterIndexListActual = new ArrayList<Integer>();
+	
 	
 	public Major(ArrayList<Course> allCourses) {
 		this.ALLCOURSES = allCourses;
@@ -87,6 +90,39 @@ public class Major {
 	}
 	
 	
+	private void findCoreqs(Course c, int currentSemester, 
+			ArrayList<ArrayList<Course>> unfinishedSemesterList) {
+		
+		ArrayList<Integer> courseIndexList = new ArrayList<Integer>();
+		ArrayList<Integer> semesterIndexList = new ArrayList<Integer>();
+		ArrayList<String> coreqsToCheck = new ArrayList<String>();
+		coreqsToCheck = c.getCoreqs();
+		
+		for (int i = 1; i<=currentSemester;i++) {
+			for (Course d: unfinishedSemesterList.get(i)) {
+				for (String courseName:coreqsToCheck) {
+					if (d.getcourseID() == courseName) {
+						courseIndexList.add(unfinishedSemesterList.get(i).indexOf(d));
+						semesterIndexList.add(i);
+						break;
+					}
+				}
+			}
+			
+		}
+		this.courseIndexListActual = courseIndexList;
+		this.semesterIndexListActual = semesterIndexList;
+	}
+	
+	
+	private Course getCourseFromIndices(int semesterIndex, int courseIndex, 
+			ArrayList<ArrayList<Course>> unfinishedSemesterList) {
+		
+		ArrayList<Course> ac = new ArrayList<Course>();
+		ac = unfinishedSemesterList.get(semesterIndex);
+		return (ac.get(courseIndex));
+	}
+	
 	private boolean getAllPossible(ArrayList<ArrayList<Course>> unfinishedSemesterList) {
 		int indexCount;
 		
@@ -108,9 +144,21 @@ public class Major {
 				if (c.prereqsMet(getcoursesBeforeSemester(i,unfinishedSemesterList)) == false) {
 					//Need to add the course to all the remaining semesters and check
 					
+					
+					//Check if the course has a coreqs
+					//Doesn't just need one, can now have multiple
+					
 					tempCourseListBefore = unfinishedSemesterList.get(i);
 					tempCourseListBefore.remove(indexCount);
 					unfinishedSemesterList.set(i,tempCourseListBefore);
+					
+					if (c.getnumberOfCoreqs() != 0) {
+						for (Integer in:this.semesterIndexListActual) {
+							
+						}
+						
+					}
+					
 					
 					for (int j = i+1; j<=semestersToFinish; j++) {
 						
