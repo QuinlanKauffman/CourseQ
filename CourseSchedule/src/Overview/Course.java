@@ -29,6 +29,9 @@ public class Course {
 	private int numberOfPrereqs;
 	private int numberOfCoreqs;
 	private int rowIndex;
+	private boolean hasPrereqs;
+	private boolean hasCoreqs;
+	
 	 
 	
 	private ArrayList<String> Prereqs = new ArrayList<String>();
@@ -73,8 +76,6 @@ public class Course {
 	
 	public void setNumberOfCoreqs(int newNumberOfCoreqs) {
 		this.numberOfCoreqs = newNumberOfCoreqs;
-		if (this.numberOfCoreqs == 0)
-			this.Coreqs = null;
 	}
 	
 	public void setPrereqs(ArrayList<String> additionalPrereqs) {
@@ -105,6 +106,8 @@ public class Course {
 		this.numberOfPrereqs = 0;
 		this.numberOfCoreqs = 0;
 		this.rowIndex = rowIndex;
+		this.hasPrereqs = hasPrereqs;
+		this.hasCoreqs = hasCoreqs;
 		
 		if (hasPrereqs == true) {
 			this.setPrereqs();
@@ -158,31 +161,21 @@ public class Course {
 	private void setCoreqs() throws IOException {
 		String sheetNm = "Coreqs";
 		String coCourseID = "";
-		int index = 0;
 		ArrayList<String> coreqs = new ArrayList<String>();
 		
 		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
         HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 		HSSFSheet sh = wb.getSheet(sheetNm);
 				
-		
-		for(Row row : sh) {
-			Cell cell = row.getCell(0);
-			if (cell.getStringCellValue() == this.courseID)
-				index = cell.getRowIndex();
-		}
-		
-		if (index != 0) {
-			for (Cell cell : sh.getRow(index)) {
-				if (cell.getColumnIndex() == 0)
-					continue;
-				
+
+		for (Cell cell : sh.getRow(this.rowIndex)) {
+			if (cell.getColumnIndex() == 0)
+				continue;
 			
-				coCourseID = cell.getStringCellValue();
-				coreqs.add(coCourseID);
-				
-			}
-		}		
+			coCourseID = cell.getStringCellValue();
+			coreqs.add(coCourseID);	
+		}	
+		
 		this.Coreqs = coreqs;
 	}
 	
@@ -212,5 +205,13 @@ public class Course {
 		if (counter == getnumberOfCoreqs())
 			return true;
 		return false;
+	}
+
+	public boolean gethasPrereqs() {
+		return this.hasPrereqs;
+	}
+	public boolean gethasCoreqs() {
+		// TODO Auto-generated method stub
+		return this.hasCoreqs;
 	}	
 }

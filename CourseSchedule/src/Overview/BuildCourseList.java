@@ -97,22 +97,7 @@ public class BuildCourseList {
 		setCourses();
 		Major m = new Major(this.allCourses);
 		
-//		System.out.println("-------------------------------------");
-//		m.printCoursesCompleted();
-//		
-//		System.out.println("-------------------------------------");
-//		System.out.println("-------------------------------------");
-//
-//		m.printAllCourses();
-//		System.out.println("-------------------------------------");
-		System.out.println("-------------------------------------");
-
-		System.out.println("Courses without reqs");
-		m.printCoursesWithoutReqs();
-		
-		System.out.println("-------------------------------------");
-		System.out.println("-------------------------------------");
-		m.printCoursesWithReqs();
+		m.printSemesters();
 
 	}
 }

@@ -36,9 +36,36 @@ public class Major {
 		this.ALLCOURSES = allCourses;
 		this.removeCoursesAlreadyTaken();
 		this.removeCoursesWithoutReqs();
-		//this.groupAllInitial();
+		this.removeCoreqsIfCompleted();
+		this.groupAllInitial();
 	}
 	
+	private void removeCoreqsIfCompleted() {
+		int indexVal = 0;
+		boolean hasPrereqsAlso = true;
+		for (Course c:this.coursesWithReqs) {
+			if (c.gethasCoreqs() == true) {
+				for(String coreq:c.getCoreqs()) {
+					for (Course d: this.coursesCompletedList) {
+						if (d.getcourseID().toUpperCase() == coreq.toUpperCase()) {
+							c.setNumberOfCoreqs(0);
+							indexVal = this.coursesWithReqs.indexOf(c);
+							hasPrereqsAlso = c.gethasPrereqs();
+							if (hasPrereqsAlso == false) {
+								this.coursesWithoutReqs.add(c);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (hasPrereqsAlso == false) {
+			this.coursesWithReqs.remove(indexVal);
+		}
+		
+	}
+
 	public ArrayList<ArrayList<ArrayList<Course>>> getPossibilties(int semestersLeft,
 			int numberOfCreditsPerSemester, int fallValue) {
 		
@@ -75,7 +102,7 @@ public class Major {
 		
 		for (Course c:coursesToTake)
 		{
-			if (c.getnumberOfCoreqs() == 0 && c.getnumberOfPrereqs() == 0) {
+			if (c.gethasCoreqs() == false && c.gethasPrereqs() == false) {
 				coursesWithoutReqs.add(c);
 			}
 			else
@@ -86,11 +113,13 @@ public class Major {
 	
 	
 	private void groupAllInitial() {
-		this.semesterList.set(0,coursesCompletedList);
+		this.semesterList.add(this.coursesCompletedList);
 		//Add the list of completed semesters to the 0th semester
-		
-		this.semesterList.set(1,coursesWithReqs);
+	
+		this.semesterList.add(this.coursesWithReqs);
 		//Put the courses with coreqs or prereqs in the first semester
+		
+		this.semesterList.add(this.coursesWithoutReqs);
 	}
 	
 	
@@ -404,6 +433,7 @@ public class Major {
 	
 	
 	public void printCoursesWithReqs() {
+		System.out.println(this.coursesWithReqs.size());
 		for (Course c: this.coursesWithReqs) {
 			System.out.println(c.getcourseID());
 		}
@@ -425,6 +455,15 @@ public class Major {
 	public void printAllCourses() {
 		for (Course c: this.ALLCOURSES) {
 			System.out.println(c.getcourseID());
+		}
+	}
+	
+	public void printSemesters() {
+		for(int i = 0; i<this.semesterList.size();i++) {
+			System.out.println("Semester: " + i);
+			for(Course c:semesterList.get(i)) {
+				System.out.println(c.getcourseID());
+			}
 		}
 	}
 }
