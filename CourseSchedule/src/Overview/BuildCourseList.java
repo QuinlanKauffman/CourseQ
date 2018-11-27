@@ -79,7 +79,7 @@ public class BuildCourseList {
 		
 
             Course c = new Course(courseID, creditHours, availSpring, availFall, courseCompleted,
-					hasPrereqs,hasCoreqs);
+					hasPrereqs,hasCoreqs,rowIndex);
 			allCourses.add(c);
 			
 		}
@@ -107,11 +107,11 @@ public class BuildCourseList {
 //		System.out.println("-------------------------------------");
 		System.out.println("-------------------------------------");
 
+		System.out.println("Courses without reqs");
 		m.printCoursesWithoutReqs();
 		
 		System.out.println("-------------------------------------");
 		System.out.println("-------------------------------------");
-		
 		m.printCoursesWithReqs();
 
 	}

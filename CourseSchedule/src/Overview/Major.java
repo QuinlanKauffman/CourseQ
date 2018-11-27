@@ -161,9 +161,9 @@ public class Major {
 					if (c.getnumberOfCoreqs() != 0) {
 						for (int a = 0; a<this.semesterIndexListActual.size(); a++) {
 							ac = unfinishedSemesterList.get(this.semesterIndexListActual.get(a));
-							Course d = new Course();
-							d = ac.get(this.courseIndexListActual.get(a));
-							tempCoreqList.add(d);
+							//Course d = new Course();
+							//d = ac.get(this.courseIndexListActual.get(a));
+							//tempCoreqList.add(d);
 						}
 						
 					}
@@ -410,6 +410,7 @@ public class Major {
 	}
 	
 	public void printCoursesWithoutReqs() {
+		System.out.println(this.coursesWithoutReqs.size());
 		for (Course c: this.coursesWithoutReqs) {
 			System.out.println(c.getcourseID());
 		}

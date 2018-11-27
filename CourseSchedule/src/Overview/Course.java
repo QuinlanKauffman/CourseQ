@@ -28,6 +28,7 @@ public class Course {
 	private boolean courseCompleted;
 	private int numberOfPrereqs;
 	private int numberOfCoreqs;
+	private int rowIndex;
 	 
 	
 	private ArrayList<String> Prereqs = new ArrayList<String>();
@@ -95,7 +96,7 @@ public class Course {
 	
 	
 	public Course(String courseID, int creditHours, boolean availFall, boolean availSpring,
-			boolean courseCompleted, boolean hasPrereqs, boolean hasCoreqs) throws IOException{
+			boolean courseCompleted, boolean hasPrereqs, boolean hasCoreqs, int rowIndex) throws IOException{
 		this.courseID = courseID;
 		this.creditHours = creditHours;
 		this.availableFall = availFall;
@@ -103,62 +104,49 @@ public class Course {
 		this.courseCompleted = courseCompleted;
 		this.numberOfPrereqs = 0;
 		this.numberOfCoreqs = 0;
+		this.rowIndex = rowIndex;
 		
 		if (hasPrereqs == true) {
 			this.setPrereqs();
-			this.numberOfPrereqs = getPrereqs().size();
+			this.numberOfPrereqs = this.Prereqs.size();
 		}
 		
 		if (hasPrereqs == false) {
-			this.Prereqs = null;
+			//this.Prereqs = null;
 			this.numberOfPrereqs = 0;
 		}
 		
 		
 		if (hasPrereqs == true) {
 			this.setCoreqs();
-			this.numberOfPrereqs = getCoreqs().size();
+			this.numberOfPrereqs = this.Coreqs.size();
 		}
 		
 		if (hasCoreqs == false) {
-			this.Coreqs = null;
+			//this.Coreqs = null;
 			this.numberOfCoreqs = 0;
 		}
 		
 	}
 	
-	
-	public Course() {
-		// TODO Auto-generated constructor stub
-	}
 
+ 
 	private void setPrereqs() throws IOException {
 		String sheetNm = "Prereqs";
 		String preCourseID = "";
-		int index = 0;
 		ArrayList<String> prereqs = new ArrayList<String>();
 		
 		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
         HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 		HSSFSheet sh = wb.getSheet(sheetNm);
 				
+		for (Cell cell : sh.getRow(this.rowIndex)) {
+			if (cell.getColumnIndex() == 0)
+				continue;
 		
-		for(Row row : sh) {
-			Cell cell = row.getCell(0);
-			if (cell.getStringCellValue() == this.courseID)
-				index = cell.getRowIndex();
-		}
-		
-		if (index != 0) {
-			for (Cell cell : sh.getRow(index)) {
-				if (cell.getColumnIndex() == 0)
-					continue;
-				
+			preCourseID = cell.getStringCellValue();
+			prereqs.add(preCourseID);
 			
-				preCourseID = cell.getStringCellValue();
-				prereqs.add(preCourseID);
-				
-			}
 		}	
 		this.Prereqs = prereqs;
 	}
