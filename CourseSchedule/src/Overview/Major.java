@@ -8,16 +8,14 @@ public class Major {
 	
 	//If the prereq or coreq has already been completed, then need to change coreqs and prereqs
 	
-	private int semestersToFinish;
+	private int semestersToFinish = 5;
 	private int maxCreditsPerSemester;
 	private int fallValue;
 	private int springValue;
 	
-	private ArrayList<ArrayList<ArrayList<Course>>> possibilitiesList = new 
-			ArrayList<ArrayList<ArrayList<Course>>>();
-	
-	private ArrayList<ArrayList<Course>> semesterList = new ArrayList<ArrayList<Course>>();
-	
+	private ArrayList<ArrayList<Course>[]> possibilitiesList = new ArrayList<ArrayList<Course>[]>();
+
+	private ArrayList<Course>[] semesterArray = new ArrayList[this.semestersToFinish+1];
 	 
 	
 	private ArrayList<Course> ALLCOURSES = new ArrayList<Course>();
@@ -32,7 +30,8 @@ public class Major {
 	private ArrayList<Integer> semesterIndexListActual = new ArrayList<Integer>();
 	
 	
-	public Major(ArrayList<Course> allCourses) {
+	public Major(int semestersToFinish, ArrayList<Course> allCourses) {
+		this.semestersToFinish = semestersToFinish;
 		this.ALLCOURSES = allCourses;
 		this.removeCoursesAlreadyTaken();
 		this.removeCoursesWithoutReqs();
@@ -66,7 +65,7 @@ public class Major {
 		
 	}
 
-	public ArrayList<ArrayList<ArrayList<Course>>> getPossibilties(int semestersLeft,
+	public ArrayList<ArrayList<Course>[]> getPossibilties(int semestersLeft,
 			int numberOfCreditsPerSemester, int fallValue) {
 		
 		this.semestersToFinish = semestersLeft;
@@ -80,7 +79,7 @@ public class Major {
 			this.springValue = 1;
 		}
 		
-		this.getAllPossible(this.semesterList);
+		this.getAllPossible(this.semesterArray);
 		System.out.println("Total number of possible combinations is :" + this.totalPossibilities());
 		return this.possibilitiesList;
 	}
@@ -113,18 +112,14 @@ public class Major {
 	
 	
 	private void groupAllInitial() {
-		this.semesterList.add(this.coursesCompletedList);
-		//Add the list of completed semesters to the 0th semester
-	
-		this.semesterList.add(this.coursesWithReqs);
-		//Put the courses with coreqs or prereqs in the first semester
-		
-		this.semesterList.add(this.coursesWithoutReqs);
+		this.semesterArray[0] = this.coursesCompletedList;
+		this.semesterArray[1] = this.coursesWithReqs;
+		this.semesterArray[2] = this.coursesWithoutReqs;
 	}
 	
 	
 	private void findCoreqs(Course c, int currentSemester, 
-			ArrayList<ArrayList<Course>> unfinishedSemesterList) {
+			ArrayList<Course>[] unfinishedSemesterArray) {
 		
 		ArrayList<Integer> courseIndexList = new ArrayList<Integer>();
 		ArrayList<Integer> semesterIndexList = new ArrayList<Integer>();
@@ -132,10 +127,10 @@ public class Major {
 		coreqsToCheck = c.getCoreqs();
 		
 		for (int i = 1; i<=currentSemester;i++) {
-			for (Course d: unfinishedSemesterList.get(i)) {
+			for (Course d: unfinishedSemesterArray[i]) {
 				for (String courseName:coreqsToCheck) {
 					if (d.getcourseID() == courseName) {
-						courseIndexList.add(unfinishedSemesterList.get(i).indexOf(d));
+						courseIndexList.add(unfinishedSemesterArray[i].indexOf(d));
 						semesterIndexList.add(i);
 						break;
 					}
@@ -149,47 +144,46 @@ public class Major {
 	
 	
 	private Course getCourseFromIndices(int semesterIndex, int courseIndex, 
-			ArrayList<ArrayList<Course>> unfinishedSemesterList) {
+			ArrayList<Course>[] unfinishedSemesterArray) {
 		
 		ArrayList<Course> ac = new ArrayList<Course>();
-		ac = unfinishedSemesterList.get(semesterIndex);
+		ac = unfinishedSemesterArray[semesterIndex];
 		return (ac.get(courseIndex));
 	}
 	
-	private boolean getAllPossible(ArrayList<ArrayList<Course>> unfinishedSemesterList) {
+	private boolean getAllPossible(ArrayList<Course>[] unfinishedSemesterArray) {
 		int indexCount;
 		
-		if (checkAll(unfinishedSemesterList) == true) {
-			this.possibilitiesList.add(unfinishedSemesterList);
-			
+		if (checkAll(unfinishedSemesterArray) == true) {
+			this.possibilitiesList.add(unfinishedSemesterArray);
 		}
 		
-		for (int i = 1; i<unfinishedSemesterList.size(); i++) {
+		for (int i = 1; i<unfinishedSemesterArray.length; i++) {
 			//Don't start on the 0th semester because those courses have already been taken
 			//Really start on the second semester
 			indexCount = 0;
 			
-			for (Course c:unfinishedSemesterList.get(i)) {
+			for (Course c:unfinishedSemesterArray[i]) {
 				
 				ArrayList<Course> tempCourseListNext = new ArrayList<Course>();
 				ArrayList<Course> tempCourseListBefore = new ArrayList<Course>();
 				ArrayList<Course> tempCoreqList = new ArrayList<Course>();
-				ArrayList<Course> ac = new ArrayList<Course>();
+				int ac;
 				
-				if (c.prereqsMet(getcoursesBeforeSemester(i,unfinishedSemesterList)) == false) {
+				if (c.prereqsMet(getcoursesBeforeSemester(i,unfinishedSemesterArray)) == false) {
 					//Need to add the course to all the remaining semesters and check
 					
 					
 					//Check if the course has a coreqs
 					//Doesn't just need one, can now have multiple
 					
-					tempCourseListBefore = unfinishedSemesterList.get(i);
+					tempCourseListBefore = unfinishedSemesterArray[i];
 					tempCourseListBefore.remove(indexCount);
-					unfinishedSemesterList.set(i,tempCourseListBefore);
+					unfinishedSemesterArray[i] = tempCourseListBefore;
 					
 					if (c.getnumberOfCoreqs() != 0) {
-						for (int a = 0; a<this.semesterIndexListActual.size(); a++) {
-							ac = unfinishedSemesterList.get(this.semesterIndexListActual.get(a));
+						for (int a = 0; a < this.semesterIndexListActual.size(); a++) {
+							ac = unfinishedSemesterArray[this.semesterIndexListActual.get(a)];
 							//Course d = new Course();
 							//d = ac.get(this.courseIndexListActual.get(a));
 							//tempCoreqList.add(d);
@@ -198,14 +192,14 @@ public class Major {
 					}
 					
 					
-					for (int j = i+1; j<=semestersToFinish; j++) {
+					for (int j = i+1; j<= this.semestersToFinish; j++) {
 						
-						tempCourseListNext = unfinishedSemesterList.get(j);
+						tempCourseListNext = unfinishedSemesterArray[i];
 							//Need to grab the next semester's ArrayList
 						tempCourseListNext.add(c);
 						
-						unfinishedSemesterList.set(j,tempCourseListNext);
-						getAllPossible(unfinishedSemesterList);
+						unfinishedSemesterArray[j] = tempCourseListNext;
+						getAllPossible(unfinishedSemesterArray);
 						
 					
 					}		
@@ -233,14 +227,14 @@ public class Major {
 	}
 	
 	public void setcoursesBeforeSemester(int semesterVal,
-			ArrayList<ArrayList<Course>> unfinishedSemesterMap ) {
+			ArrayList<Course>[] unfinishedSemesterArray ) {
 		//Can also add the APs if needed
 		//And if using when not a freshmen
 		
 		ArrayList<Course> a = new ArrayList<Course>();
 		//Already added the courses completed to the 0th semester
-		for (int i=0; i < semesterVal;i++) {
-			for (Course c : unfinishedSemesterMap.get(i)) {
+		for (int i = 0; i < semesterVal;i++) {
+			for (Course c : unfinishedSemesterArray[i]) {
 				a.add(c);
 			}
 		}
@@ -248,28 +242,28 @@ public class Major {
 	}
 	
 	public ArrayList<Course> getcoursesBeforeSemester(int semesterVal,
-			ArrayList<ArrayList<Course>> unfinishedSemesterList) {
+			ArrayList<Course>[] unfinishedSemesterArray) {
 		
-		setcoursesBeforeSemester(semesterVal,unfinishedSemesterList);
+		setcoursesBeforeSemester(semesterVal,unfinishedSemesterArray);
 		return this.coursesBeforeSemester;
 	}
 	
 	
-	private boolean checkAll(ArrayList<ArrayList<Course>> unfinishedSemesterList) {
-		if (checkPrereqs(unfinishedSemesterList) == true &&
-				checkCoreqs(unfinishedSemesterList) == true && 
-				checkCredits(unfinishedSemesterList) == true &&
-				checkFallAndSpring(unfinishedSemesterList) == true)
+	private boolean checkAll(ArrayList<Course>[] unfinishedSemesterArray) {
+		if (checkPrereqs(unfinishedSemesterArray) == true &&
+				checkCoreqs(unfinishedSemesterArray) == true && 
+				checkCredits(unfinishedSemesterArray) == true &&
+				checkFallAndSpring(unfinishedSemesterArray) == true)
 			return true;
 		
 		return false;
 	}
 	
-	private boolean checkPrereqs(ArrayList<ArrayList<Course>> unfinishedSemesterList){
+	private boolean checkPrereqs(ArrayList<Course>[] unfinishedSemesterArray){
 		//true by default
-		for (int i = 1; i<unfinishedSemesterList.size();i++){
-			setcoursesBeforeSemester(i,unfinishedSemesterList);
-			for (Course c : unfinishedSemesterList.get(i)) {
+		for (int i = 1; i<unfinishedSemesterArray.length;i++){
+			setcoursesBeforeSemester(i,unfinishedSemesterArray);
+			for (Course c : unfinishedSemesterArray[i]) {
 				if (c.prereqsMet(this.coursesBeforeSemester) == false){
 					return false;
 				}
@@ -278,14 +272,14 @@ public class Major {
 		return true;
 	}
 		
-	private boolean checkCoreqs(ArrayList<ArrayList<Course>> unfinishedSemesterList) {
+	private boolean checkCoreqs(ArrayList<Course>[] unfinishedSemesterArray) {
 		//true by default
 		//remove then add back
 		//May have accounted for with the plus 1
 		
-		for(int i=1;i<unfinishedSemesterList.size();i++){
-			for (Course c : unfinishedSemesterList.get(i)) { 
-				if (c.coreqsMet(unfinishedSemesterList.get(i)) == false){
+		for(int i=1;i<unfinishedSemesterArray.length;i++){
+			for (Course c : unfinishedSemesterArray[i]) { 
+				if (c.coreqsMet(unfinishedSemesterArray[i]) == false){
 					//May need to adjust slightly
 					//Remove and then add back
 					return false;
@@ -295,9 +289,9 @@ public class Major {
 		return true;
 	}
 	
-	private boolean checkFallAndSpring(ArrayList<ArrayList<Course>> unfinishedSemesterList) {
-		for (int i = 1; i < unfinishedSemesterList.size();i++) {
-			for (Course c : unfinishedSemesterList.get(i)) { 
+	private boolean checkFallAndSpring(ArrayList<Course>[] unfinishedSemesterArray) {
+		for (int i = 1; i < unfinishedSemesterArray.length;i++) {
+			for (Course c : unfinishedSemesterArray[i]) { 
 				if (c.getfallAvailability() == true && c.getspringAvailability() == true)
 					continue;
 			
@@ -315,11 +309,11 @@ public class Major {
 		return true;
 	}
 	
-	private boolean checkCredits(ArrayList<ArrayList<Course>> unfinishedSemesterList){
+	private boolean checkCredits(ArrayList<Course>[] unfinishedSemesterArray){
 		int count;
-		for (int i = 1; i < unfinishedSemesterList.size();i++){
+		for (int i = 1; i < unfinishedSemesterArray.length;i++){
 			count = 0;
-			for (Course c : unfinishedSemesterList.get(i)) { 
+			for (Course c : unfinishedSemesterArray[i]) { 
 				count += c.getcreditHours();
 			}
 			if (count > this.maxCreditsPerSemester)
@@ -459,9 +453,9 @@ public class Major {
 	}
 	
 	public void printSemesters() {
-		for(int i = 0; i<this.semesterList.size();i++) {
+		for(int i = 0; i<3;i++) {
 			System.out.println("Semester: " + i);
-			for(Course c:semesterList.get(i)) {
+			for(Course c:semesterArray[i]) {
 				System.out.println(c.getcourseID());
 			}
 		}

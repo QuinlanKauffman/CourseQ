@@ -95,7 +95,7 @@ public class BuildCourseList {
 		ArrayList<ArrayList<ArrayList<Course>>> poss = new 
 				ArrayList<ArrayList<ArrayList<Course>>>();
 		setCourses();
-		Major m = new Major(this.allCourses);
+		Major m = new Major(5,this.allCourses);
 		
 		m.printSemesters();
 

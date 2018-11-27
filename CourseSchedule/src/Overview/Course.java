@@ -134,6 +134,10 @@ public class Course {
 	
 
  
+	public Course() {
+		// TODO Auto-generated constructor stub
+	}
+
 	private void setPrereqs() throws IOException {
 		String sheetNm = "Prereqs";
 		String preCourseID = "";
