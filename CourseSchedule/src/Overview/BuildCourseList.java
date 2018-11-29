@@ -49,7 +49,7 @@ public class BuildCourseList {
 			for (Cell cell : sh.getRow(rowIndex)) {
 				
 				if (cell.getColumnIndex() == 0) {
-					courseID = cell.getStringCellValue();
+					courseID = cell.getRichStringCellValue().getString();
 				}
 				
 				if (cell.getColumnIndex() == 1) {
@@ -95,6 +95,7 @@ public class BuildCourseList {
 		ArrayList<ArrayList<ArrayList<Course>>> poss = new 
 				ArrayList<ArrayList<ArrayList<Course>>>();
 		setCourses();
+			
 		Major m = new Major(5,this.allCourses);
 		
 		m.printSemesters();

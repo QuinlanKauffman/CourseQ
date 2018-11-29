@@ -41,30 +41,22 @@ public class Major {
 	
 	private void removeCoreqsIfCompleted() {
 		int indexVal = 0;
-		boolean hasPrereqsAlso = true;
+		int counter = 0;
 		for (Course c:this.coursesWithReqs) {
 			if (c.gethasCoreqs() == true) {
 				for(String coreq:c.getCoreqs()) {
 					for (Course d: this.coursesCompletedList) {
-						if (d.getcourseID().toUpperCase() == coreq.toUpperCase()) {
-							c.setNumberOfCoreqs(0);
-							indexVal = this.coursesWithReqs.indexOf(c);
-							hasPrereqsAlso = c.gethasPrereqs();
-							if (hasPrereqsAlso == false) {
-								this.coursesWithoutReqs.add(c);
-							}
+						if (d.getcourseID() == coreq) {
+							counter +=1;
 						}
 					}
 				}
 			}
 		}
-		
-		if (hasPrereqsAlso == false) {
-			this.coursesWithReqs.remove(indexVal);
-		}
-		
+		System.out.println("Counter: " + counter);
 	}
 
+	
 	public ArrayList<ArrayList<Course>[]> getPossibilties(int semestersLeft,
 			int numberOfCreditsPerSemester, int fallValue) {
 		

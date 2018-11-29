@@ -1,6 +1,8 @@
 package Overview;
 
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -114,21 +116,11 @@ public class Course {
 			this.numberOfPrereqs = this.Prereqs.size();
 		}
 		
-		if (hasPrereqs == false) {
-			//this.Prereqs = null;
-			this.numberOfPrereqs = 0;
-		}
-		
-		
-		if (hasPrereqs == true) {
+		if (hasCoreqs == true) {
 			this.setCoreqs();
-			this.numberOfPrereqs = this.Coreqs.size();
+			this.numberOfCoreqs = this.Coreqs.size();
 		}
 		
-		if (hasCoreqs == false) {
-			//this.Coreqs = null;
-			this.numberOfCoreqs = 0;
-		}
 		
 	}
 	
@@ -138,23 +130,34 @@ public class Course {
 		// TODO Auto-generated constructor stub
 	}
 
+	public void changeCoreqs() {
+		for (String coreq : this.Coreqs)
+			if (coreq == "") {
+				Coreqs.remove(Coreqs.indexOf(coreq));
+				break;
+			}
+			
+		this.numberOfCoreqs = this.Coreqs.size();
+	}
+	
+	public void setCoreqs(int indexVal, String newString) {
+		this.Coreqs.set(indexVal, newString);
+	}
+	
 	private void setPrereqs() throws IOException {
 		String sheetNm = "Prereqs";
-		String preCourseID = "";
 		ArrayList<String> prereqs = new ArrayList<String>();
 		
 		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
         HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 		HSSFSheet sh = wb.getSheet(sheetNm);
 				
-		for (Cell cell : sh.getRow(this.rowIndex)) {
+		for(Cell cell : sh.getRow(this.rowIndex)) {
 			if (cell.getColumnIndex() == 0)
 				continue;
-		
-			preCourseID = cell.getStringCellValue();
-			prereqs.add(preCourseID);
-			
-		}	
+			prereqs.add(cell.getRichStringCellValue().getString());
+          
+		 }
 		this.Prereqs = prereqs;
 	}
 	
@@ -164,24 +167,23 @@ public class Course {
 	
 	private void setCoreqs() throws IOException {
 		String sheetNm = "Coreqs";
-		String coCourseID = "";
 		ArrayList<String> coreqs = new ArrayList<String>();
 		
 		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
         HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
 		HSSFSheet sh = wb.getSheet(sheetNm);
 				
-
-		for (Cell cell : sh.getRow(this.rowIndex)) {
+		
+		for(Cell cell : sh.getRow(this.rowIndex)) {
 			if (cell.getColumnIndex() == 0)
 				continue;
-			
-			coCourseID = cell.getStringCellValue();
-			coreqs.add(coCourseID);	
-		}	
-		
+			coreqs.add(cell.getRichStringCellValue().getString());
+          
+		 }
 		this.Coreqs = coreqs;
 	}
+	
+	
 	
 	public ArrayList<String> getCoreqs() {
 		return this.Coreqs;
@@ -218,4 +220,16 @@ public class Course {
 		// TODO Auto-generated method stub
 		return this.hasCoreqs;
 	}	
+	
+	private boolean isCellEmpty(HSSFCell cell) {
+	    if (cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+	        return true;
+	    }
+
+	    if (cell.getCellType() == Cell.CELL_TYPE_STRING && cell.getStringCellValue().isEmpty()) {
+	        return true;
+	    }
+
+	    return false;
+	}
 }
