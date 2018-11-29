@@ -40,12 +40,14 @@ public class Major {
 	}
 	
 	private void removeCoreqsIfCompleted() {
-		int indexVal = 0;
 		int counter = 0;
 		for (Course c:this.coursesWithReqs) {
 			if (c.gethasCoreqs() == true) {
 				for(String coreq:c.getCoreqs()) {
+					System.out.println("Coreq: "+coreq);
 					for (Course d: this.coursesCompletedList) {
+						//System.out.println("Course: "+d.getcourseID());
+						
 						if (d.getcourseID() == coreq) {
 							counter +=1;
 						}
@@ -175,7 +177,7 @@ public class Major {
 					
 					if (c.getnumberOfCoreqs() != 0) {
 						for (int a = 0; a < this.semesterIndexListActual.size(); a++) {
-							ac = unfinishedSemesterArray[this.semesterIndexListActual.get(a)];
+							//ac = unfinishedSemesterArray[this.semesterIndexListActual.get(a)];
 							//Course d = new Course();
 							//d = ac.get(this.courseIndexListActual.get(a));
 							//tempCoreqList.add(d);

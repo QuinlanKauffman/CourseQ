@@ -30,7 +30,7 @@ public class BuildCourseList {
 	
 	public void setCourses() throws IOException {
 		String sheetNm = "General Info";
-		String courseID = null;
+		String courseID = "";
 		int creditHours = 0;
 		boolean availFall = false;
 		boolean availSpring = false;
@@ -49,7 +49,7 @@ public class BuildCourseList {
 			for (Cell cell : sh.getRow(rowIndex)) {
 				
 				if (cell.getColumnIndex() == 0) {
-					courseID = cell.getRichStringCellValue().getString();
+					courseID = cell.getStringCellValue();
 				}
 				
 				if (cell.getColumnIndex() == 1) {
@@ -98,7 +98,7 @@ public class BuildCourseList {
 			
 		Major m = new Major(5,this.allCourses);
 		
-		m.printSemesters();
+		//m.printSemesters();
 
 	}
 }

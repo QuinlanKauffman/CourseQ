@@ -110,7 +110,7 @@ public class Course {
 		this.rowIndex = rowIndex;
 		this.hasPrereqs = hasPrereqs;
 		this.hasCoreqs = hasCoreqs;
-		
+		 
 		if (hasPrereqs == true) {
 			this.setPrereqs();
 			this.numberOfPrereqs = this.Prereqs.size();
@@ -126,9 +126,7 @@ public class Course {
 	
 
  
-	public Course() {
-		// TODO Auto-generated constructor stub
-	}
+	public Course() {}
 
 	public void changeCoreqs() {
 		for (String coreq : this.Coreqs)
@@ -146,7 +144,6 @@ public class Course {
 	
 	private void setPrereqs() throws IOException {
 		String sheetNm = "Prereqs";
-		ArrayList<String> prereqs = new ArrayList<String>();
 		
 		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
         HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
@@ -155,10 +152,9 @@ public class Course {
 		for(Cell cell : sh.getRow(this.rowIndex)) {
 			if (cell.getColumnIndex() == 0)
 				continue;
-			prereqs.add(cell.getRichStringCellValue().getString());
+			this.Prereqs.add(cell.getStringCellValue());
           
 		 }
-		this.Prereqs = prereqs;
 	}
 	
 	private ArrayList<String> getPrereqs() {
@@ -167,20 +163,17 @@ public class Course {
 	
 	private void setCoreqs() throws IOException {
 		String sheetNm = "Coreqs";
-		ArrayList<String> coreqs = new ArrayList<String>();
 		
 		POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(this.filePath));
         HSSFWorkbook wb = new HSSFWorkbook(fileSystem);
-		HSSFSheet sh = wb.getSheet(sheetNm);
-				
+		HSSFSheet sh = wb.getSheet(sheetNm);	
 		
 		for(Cell cell : sh.getRow(this.rowIndex)) {
 			if (cell.getColumnIndex() == 0)
 				continue;
-			coreqs.add(cell.getRichStringCellValue().getString());
+			this.Coreqs.add(cell.getStringCellValue());
           
 		 }
-		this.Coreqs = coreqs;
 	}
 	
 	
@@ -217,7 +210,6 @@ public class Course {
 		return this.hasPrereqs;
 	}
 	public boolean gethasCoreqs() {
-		// TODO Auto-generated method stub
 		return this.hasCoreqs;
 	}	
 	
